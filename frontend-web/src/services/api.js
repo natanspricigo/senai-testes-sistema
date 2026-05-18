@@ -10,11 +10,9 @@ function normalizeApiUrl(url) {
   return trimmedUrl.endsWith('/api') ? trimmedUrl : `${trimmedUrl}/api`
 }
 
-const API_BASE_URL = normalizeApiUrl(configuredApiUrl) || (isDev ? 'http://localhost:8080/api' : null)
+const API_BASE_URL = normalizeApiUrl(configuredApiUrl) || (isDev ? 'http://localhost:8080/api' : '/api')
 
 console.log('[API] Base URL:', API_BASE_URL)
-
-const apiNotConfiguredMessage = 'API nao configurada. Defina VITE_API_URL no Render com a URL publica do backend, por exemplo: https://senai-testes-api.onrender.com/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -22,10 +20,6 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  if (!API_BASE_URL) {
-    return Promise.reject(new Error(apiNotConfiguredMessage))
-  }
-
   return config
 })
 

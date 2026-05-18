@@ -1,11 +1,29 @@
 import http from 'node:http'
 import { URL } from 'node:url'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const port = Number(process.env.PORT || 8080)
-const allowedOriginPatterns = (process.env.APP_CORS_ALLOWED_ORIGIN_PATTERNS || 'http://localhost:3000,http://127.0.0.1:3000,https://*.onrender.com')
+const allowedOriginPatterns = (process.env.APP_CORS_ALLOWED_ORIGIN_PATTERNS || 'http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://*.onrender.com')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean)
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const publicDir = path.join(__dirname, 'public')
+const indexFile = path.join(publicDir, 'index.html')
+
+const contentTypes = {
+  '.css': 'text/css; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+  '.ico': 'image/x-icon',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.map': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp'
+}
 
 let professorId = 3
 let carrinhoId = 4
@@ -66,6 +84,46 @@ function sendText(res, status, text, origin, contentType = 'text/plain; charset=
     ...(allowedOrigin ? { 'Access-Control-Allow-Origin': allowedOrigin } : {})
   })
   res.end(text)
+}
+
+function sendFile(res, filePath, origin) {
+  const allowedOrigin = getAllowedOrigin(origin)
+  const ext = path.extname(filePath)
+  const contentType = contentTypes[ext] || 'application/octet-stream'
+
+  fs.readFile(filePath, (error, data) => {
+    if (error) {
+      sendJson(res, 404, { mensagem: 'Arquivo nao encontrado' }, origin)
+      return
+    }
+
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Content-Length': data.length,
+      ...(allowedOrigin ? { 'Access-Control-Allow-Origin': allowedOrigin } : {})
+    })
+    res.end(data)
+  })
+}
+
+function serveStatic(req, res, url, origin) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return false
+  if (!fs.existsSync(indexFile)) return false
+
+  const decodedPath = decodeURIComponent(url.pathname)
+  const safePath = path.normalize(decodedPath).replace(/^(\.\.[/\\])+/, '')
+  const requestedFile = path.join(publicDir, safePath)
+  const resolvedFile = fs.existsSync(requestedFile) && fs.statSync(requestedFile).isFile()
+    ? requestedFile
+    : indexFile
+
+  if (!resolvedFile.startsWith(publicDir)) {
+    sendJson(res, 403, { mensagem: 'Acesso negado' }, origin)
+    return true
+  }
+
+  sendFile(res, resolvedFile, origin)
+  return true
 }
 
 function notFound(message) {
@@ -351,7 +409,7 @@ const server = http.createServer(async (req, res) => {
   try {
     if (req.method === 'OPTIONS') return sendJson(res, 204, {}, origin)
     if (url.pathname === '/actuator/health') return sendJson(res, 200, { status: 'UP' }, origin)
-    if (url.pathname === '/') return sendJson(res, 200, { name: 'Carrinhos API', status: 'online' }, origin)
+    if (url.pathname === '/' && !fs.existsSync(indexFile)) return sendJson(res, 200, { name: 'Carrinhos API', status: 'online' }, origin)
     if (url.pathname === '/swagger-ui.html') {
       return sendText(res, 200, '<h1>Carrinhos API</h1><p>Endpoints: /api/professores, /api/carrinhos, /api/reservas</p>', origin, 'text/html; charset=utf-8')
     }
@@ -359,6 +417,7 @@ const server = http.createServer(async (req, res) => {
     if (parts[0] === 'api' && parts[1] === 'professores') return await handleProfessores(req, res, parts, origin)
     if (parts[0] === 'api' && parts[1] === 'carrinhos') return await handleCarrinhos(req, res, parts, origin)
     if (parts[0] === 'api' && parts[1] === 'reservas') return await handleReservas(req, res, url, parts, origin)
+    if (serveStatic(req, res, url, origin)) return
 
     return sendJson(res, 404, { mensagem: 'Endpoint nao encontrado' }, origin)
   } catch (error) {
