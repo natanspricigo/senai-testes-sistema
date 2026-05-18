@@ -1,26 +1,28 @@
-# Guia Rápido de Desenvolvimento
+# Guia Rapido
 
-Este documento fornece instruções rápidas para começar a trabalhar com os projetos.
-
-## Iniciar Backend
+## Rodar backend
 
 ```bash
 cd backend-api
-mvn clean install
-mvn spring-boot:run
+npm install
+npm start
 ```
 
-Acesse: `http://localhost:8080`
+Acesse:
 
-### Verificar Swagger
+```text
+http://localhost:8080
+```
 
-`http://localhost:8080/swagger-ui.html`
+Health check:
 
-### Acessar H2 Console
+```text
+http://localhost:8080/actuator/health
+```
 
-`http://localhost:8080/h2-console`
+## Rodar frontend
 
-## Iniciar Frontend
+Em outro terminal:
 
 ```bash
 cd frontend-web
@@ -28,80 +30,66 @@ npm install
 npm run dev
 ```
 
-Acesse: `http://localhost:3000`
+Acesse:
 
-## Testar com Postman
-
-1. Importe: `backend-api/postman/notebook-reservas.postman_collection.json`
-2. Execute os testes
-
-## Estrutura de Diretórios
-
-```
-testes de software/
-├── backend-api/
-│   ├── src/
-│   ├── pom.xml
-│   ├── README.md
-│   ├── CASOS_DE_TESTE.md
-│   ├── postman/
-│   └── .gitignore
-├── frontend-web/
-│   ├── src/
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── index.html
-│   ├── README.md
-│   └── .gitignore
-└── README.md (este arquivo)
+```text
+http://localhost:3000
 ```
 
-## Endpoints Principais
+## Rodar tudo com Docker
 
-### API Base
-`http://localhost:8080/api`
+```bash
+docker compose up --build
+```
 
-### Recursos
-- `/api/professores` - CRUD de professores
-- `/api/carrinhos` - CRUD de carrinhos
-- `/api/reservas` - CRUD de reservas
+Acesse:
 
-## Fluxo de Trabalho
+```text
+http://localhost:3001
+```
 
-1. Executar backend
-2. Executar frontend
-3. Testar no Postman ou no navegador
-4. Verificar logs do backend
-5. Debugar se necessário
+## Endpoints principais
 
-## Problemas Comuns
+```text
+GET    /api/professores
+POST   /api/professores
+PUT    /api/professores/{id}
+PATCH  /api/professores/{id}/ativar
+PATCH  /api/professores/{id}/inativar
 
-### Backend não inicia
-- Verifique se Java 17+ está instalado: `java -version`
-- Verifique porta 8080 livre
-- Limpe cache: `mvn clean`
+GET    /api/carrinhos
+POST   /api/carrinhos
+PUT    /api/carrinhos/{id}
+PATCH  /api/carrinhos/{id}/ativar
+PATCH  /api/carrinhos/{id}/inativar
 
-### Frontend não conecta à API
-- Verifique se backend está rodando
-- Verifique URL em `src/services/api.js`
-- Abra console do navegador (F12)
+GET    /api/reservas
+POST   /api/reservas
+GET    /api/reservas?dataUso=2026-05-20
+GET    /api/reservas?professorId=1
+GET    /api/reservas?carrinhoId=1
+PATCH  /api/reservas/{id}/cancelar
+PATCH  /api/reservas/{id}/finalizar
+```
 
-### Dados não aparecem
-- Verifique console do navegador
-- Verifique logs do backend
-- Verifique H2 Console se dados existem
+## Deploy no Render
 
-## Próximos Passos
+Use o arquivo:
 
-- [ ] Entender estrutura Java/Maven
-- [ ] Entender estrutura React/Vite
-- [ ] Testar todos endpoints
-- [ ] Adicionar mais validações
-- [ ] Implementar autenticação (opcional)
-- [ ] Deploy em produção (opcional)
+```text
+render.yaml
+```
 
-## Recursos
+Passos:
 
-- Backend: [README.md](backend-api/README.md)
-- Frontend: [README.md](frontend-web/README.md)
-- Casos de Teste: [CASOS_DE_TESTE.md](backend-api/CASOS_DE_TESTE.md)
+1. Suba o projeto para o GitHub.
+2. No Render, clique em New > Blueprint.
+3. Selecione o repositorio.
+4. Confirme os servicos.
+5. Clique em Apply.
+
+## Observacoes
+
+- O backend usa dados em memoria.
+- Os dados voltam ao estado inicial quando a API reinicia.
+- No plano gratuito do Render, a primeira chamada pode demorar quando o backend estiver dormindo.

@@ -1,54 +1,32 @@
-# Quick Deploy Guide
+# Quick Deploy no Render
 
-Guia rápido para fazer deploy em 5 minutos!
+Guia rapido para publicar o frontend e o backend no Render.
 
-## 🚀 Opção 1: Vercel + Railway (Recomendado)
+## Deploy com Blueprint
 
-### 1. Frontend em Vercel
+1. Suba o projeto para o GitHub.
+2. Acesse https://render.com.
+3. Clique em New > Blueprint.
+4. Selecione este repositorio.
+5. Confirme o arquivo `render.yaml`.
+6. Clique em Apply.
 
-```bash
-# Se tiver Vercel CLI instalado:
-npm install -g vercel
-cd frontend-web
-vercel
-```
+O Render cria dois servicos:
 
-Ou manualmente:
-1. Acesse https://vercel.com
-2. Clique "Import Project"
-3. Cole a URL do seu repositório GitHub
-4. Root Directory: `frontend-web`
-5. Adicione env var: `VITE_API_URL=https://seu-backend-url/api`
+- `senai-testes-api`: backend Node.js.
+- `senai-testes-web`: frontend React/Vite.
 
-### 2. Backend em Railway
+## URLs
 
-1. Acesse https://railway.app
-2. Clique "New Project"
-3. Selecione seu repositório
-4. Root Directory: `backend-api`
-5. Deploy automático!
+Depois do deploy, use:
 
-Copie a URL gerada. Use no VITE_API_URL do Vercel.
+- Frontend: `https://senai-testes-web.onrender.com`
+- Backend: `https://senai-testes-api.onrender.com`
+- Health check: `https://senai-testes-api.onrender.com/actuator/health`
+- Health check: `https://senai-testes-api.onrender.com/actuator/health`
 
----
+O `VITE_API_URL` do frontend e preenchido automaticamente pelo `render.yaml`.
 
-## 📱 Compartilhar com Alunos
+## Observacao
 
-Apenas a URL do Vercel:
-```
-https://seu-app.vercel.app
-```
-
-## 🐳 Rodar Localmente
-
-```bash
-docker-compose up -d
-```
-
-Acesse:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:8080
-
-## ✅ Pronto!
-
-Seus alunos agora têm acesso à aplicação!
+No plano gratuito, o backend pode dormir apos um periodo sem uso. A primeira chamada depois disso pode demorar alguns segundos.

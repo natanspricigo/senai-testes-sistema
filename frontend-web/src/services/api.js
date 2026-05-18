@@ -3,11 +3,18 @@ import axios from 'axios'
 const configuredApiUrl = import.meta.env.VITE_API_URL
 const isDev = import.meta.env.DEV
 
-const API_BASE_URL = configuredApiUrl || (isDev ? 'http://localhost:8080/api' : null)
+function normalizeApiUrl(url) {
+  if (!url) return null
+
+  const trimmedUrl = url.replace(/\/+$/, '')
+  return trimmedUrl.endsWith('/api') ? trimmedUrl : `${trimmedUrl}/api`
+}
+
+const API_BASE_URL = normalizeApiUrl(configuredApiUrl) || (isDev ? 'http://localhost:8080/api' : null)
 
 console.log('[API] Base URL:', API_BASE_URL)
 
-const apiNotConfiguredMessage = 'API nao configurada. Defina VITE_API_URL no Vercel com a URL publica do backend, por exemplo: https://seu-backend.onrender.com/api'
+const apiNotConfiguredMessage = 'API nao configurada. Defina VITE_API_URL no Render com a URL publica do backend, por exemplo: https://senai-testes-api.onrender.com/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,

@@ -1,29 +1,16 @@
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copiar pom.xml e baixar dependências
-COPY pom.xml .
-COPY src ./src
+COPY package*.json ./
+RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
 
-# Build
-RUN apk add --no-cache maven && \
-    mvn clean package -DskipTests
+COPY . .
 
-# Runtime image
-FROM eclipse-temurin:17-jre-alpine
-
-WORKDIR /app
-
-# Copiar JAR da fase de build
-COPY --from=builder /app/target/carrinhos-api-*.jar app.jar
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
-
-# Expor porta
+ENV NODE_ENV=production
 EXPOSE 8080
 
-# Iniciar aplicação
-ENTRYPOINT ["java", "-jar", "app.jar"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/actuator/health || exit 1
+
+CMD ["npm", "start"]

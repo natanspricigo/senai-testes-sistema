@@ -1,9 +1,9 @@
-# Infra: Docker e Vercel
+# Infra: Docker e Render
 
 Este projeto esta preparado para dois cenarios:
 
-- Docker local ou em servidor: sobe backend Spring Boot e frontend React com Nginx.
-- Vercel: publica o frontend. O backend Java deve ficar em um host que rode Docker/Java, por exemplo Render, Railway, Fly.io, VPS ou servidor da escola.
+- Docker local: sobe backend Node.js e frontend React com Nginx.
+- Render: publica o backend como Web Service Docker e o frontend como Static Site.
 
 ## Rodar tudo com Docker
 
@@ -13,69 +13,61 @@ Na raiz do projeto:
 docker compose up --build
 ```
 
-Se a porta `3000` ja estiver ocupada:
+Por padrao, o frontend do Docker fica na porta `3001` para nao conflitar com o Vite local.
+
+Se quiser trocar a porta:
 
 ```bash
-FRONTEND_PORT=3001 docker compose up --build
+FRONTEND_PORT=3002 docker compose up --build
 ```
 
 No PowerShell:
 
 ```powershell
-$env:FRONTEND_PORT='3001'
+$env:FRONTEND_PORT='3002'
 docker compose up --build
 ```
 
-Acessos:
+Acessos locais:
 
-- Frontend: `http://localhost:3000`
+- Frontend: `http://localhost:3001`
 - Backend: `http://localhost:8080`
-- Swagger: `http://localhost:8080/swagger-ui.html`
 - Health check: `http://localhost:8080/actuator/health`
 
-O frontend em Docker chama a API por `/api`, e o Nginx repassa internamente para `http://backend:8080/api`.
+## Deploy no Render
 
-## Deploy do backend em Docker
-
-Build da imagem:
-
-```bash
-docker build -t carrinhos-api ./backend-api
-```
-
-Execucao:
-
-```bash
-docker run -p 8080:8080 \
-  -e SPRING_PROFILES_ACTIVE=prod \
-  -e APP_CORS_ALLOWED_ORIGIN_PATTERNS=https://seu-projeto.vercel.app,https://*.vercel.app \
-  carrinhos-api
-```
-
-Depois de publicar, guarde a URL publica da API, por exemplo:
+Use o Blueprint da raiz:
 
 ```text
-https://carrinhos-api.onrender.com/api
+render.yaml
 ```
 
-## Deploy do frontend na Vercel
+No Render:
 
-Voce pode importar o repositorio pela Vercel usando a raiz do projeto. O arquivo `vercel.json` da raiz ja aponta para `frontend-web`.
+1. New > Blueprint.
+2. Selecione o repositorio.
+3. Confirme os servicos.
+4. Clique em Apply.
 
-Configure a variavel de ambiente na Vercel:
+Servicos criados:
+
+- `senai-testes-api`: backend Node.js usando `backend-api/Dockerfile`.
+- `senai-testes-web`: frontend React/Vite usando `frontend-web/dist`.
+
+O `VITE_API_URL` do frontend referencia automaticamente a URL publica do backend.
+
+## Variaveis principais
+
+Backend:
 
 ```text
-VITE_API_URL=https://sua-api-publica.com/api
+APP_CORS_ALLOWED_ORIGIN_PATTERNS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://*.onrender.com
 ```
 
-Build esperado:
+Frontend:
 
-- Install command: `cd frontend-web && npm install`
-- Build command: `cd frontend-web && npm run build`
-- Output directory: `frontend-web/dist`
+```text
+VITE_API_URL=https://senai-testes-api.onrender.com/api
+```
 
-Tambem funciona fazendo deploy de dentro da pasta `frontend-web`, pois ela tem seu proprio `vercel.json`.
-
-## Observacao importante
-
-A Vercel nao executa `docker-compose.yml` para este tipo de projeto. Por isso, o frontend fica na Vercel e o backend Spring Boot fica em um servico que aceite Docker/Java. O CORS do backend ja esta liberado para localhost e dominios `*.vercel.app`.
+Quando usar o Blueprint, o Render configura essa variavel automaticamente.

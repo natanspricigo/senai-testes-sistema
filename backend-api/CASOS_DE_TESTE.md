@@ -451,7 +451,7 @@ Use este checklist ao testar a API:
 4. **Observe os códigos HTTP** (201, 200, 400, 404, 500)
 5. **Leia as mensagens de erro** para entender as regras
 6. **Use os dados iniciais** para começar rápido
-7. **Inspecione o H2 Console** para ver o estado do banco
+7. **Reinicie a API** quando quiser restaurar os dados iniciais em memoria
 
 ---
 
