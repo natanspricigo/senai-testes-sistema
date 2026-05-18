@@ -1,578 +1,670 @@
 {
-  "info": {
-    "name": "Carrinhos Notebooks API",
-    "description": "Collection de testes para API de reserva de carrinhos de notebooks",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Professores",
-      "item": [
-        {
-          "name": "Criar professor válido",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 201', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "pm.test('Professor foi criado', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.nome).to.eql('Prof. Teste');",
-                  "    pm.expect(jsonData.ativo).to.eql(true);",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"nome\": \"Prof. Teste\", \"email\": \"prof.teste@senai.br\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/professores",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "professores"]
-            }
-          }
-        },
-        {
-          "name": "Criar professor inválido (email duplicado)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Retorna mensagem de erro', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.erro).to.exist;",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"nome\": \"Prof. Repetido\", \"email\": \"joao.silva@senai.br\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/professores",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "professores"]
-            }
-          }
-        },
-        {
-          "name": "Criar professor com email inválido",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Retorna erro de validação', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.mensagem).to.include('email');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"nome\": \"Prof. Email Inválido\", \"email\": \"emailinvalido\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/professores",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "professores"]
-            }
-          }
-        },
-        {
-          "name": "Listar professores",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Retorna lista de professores', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:8080/api/professores",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "professores"]
-            }
-          }
-        },
-        {
-          "name": "Obter professor por ID",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:8080/api/professores/1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "professores", "1"]
-            }
-          }
-        },
-        {
-          "name": "Inativar professor",
-          "request": {
-            "method": "PATCH",
-            "url": {
-              "raw": "http://localhost:8080/api/professores/3/inativar",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "professores", "3", "inativar"]
-            }
-          }
-        },
-        {
-          "name": "Ativar professor",
-          "request": {
-            "method": "PATCH",
-            "url": {
-              "raw": "http://localhost:8080/api/professores/3/ativar",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "professores", "3", "ativar"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Carrinhos",
-      "item": [
-        {
-          "name": "Criar carrinho válido",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 201', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "pm.test('Carrinho foi criado', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.numero).to.eql(10);",
-                  "    pm.expect(jsonData.ativo).to.eql(true);",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"numero\": 10, \"descricao\": \"Carrinho teste\", \"quantidadeNotebooks\": 20, \"localizacao\": \"Sala 105\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/carrinhos",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "carrinhos"]
-            }
-          }
-        },
-        {
-          "name": "Criar carrinho com quantidade inválida",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"numero\": 11, \"descricao\": \"Carrinho inválido\", \"quantidadeNotebooks\": 0, \"localizacao\": \"Sala 105\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/carrinhos",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "carrinhos"]
-            }
-          }
-        },
-        {
-          "name": "Listar carrinhos",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:8080/api/carrinhos",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "carrinhos"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Reservas",
-      "item": [
-        {
-          "name": "Criar reserva válida",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 201', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "pm.test('Reserva foi criada com status AGENDADA', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql('AGENDADA');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"professorId\": 1, \"carrinhoId\": 1, \"dataUso\": \"2026-05-25\", \"horaInicio\": \"16:00\", \"horaFim\": \"18:00\", \"turma\": \"ADS 4A\", \"observacao\": \"Teste válido\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/reservas",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"]
-            }
-          }
-        },
-        {
-          "name": "Criar reserva com conflito de horário",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Retorna erro de conflito', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.mensagem).to.include('conflito');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"professorId\": 1, \"carrinhoId\": 1, \"dataUso\": \"2026-05-20\", \"horaInicio\": \"09:00\", \"horaFim\": \"10:30\", \"turma\": \"ADS 2B\", \"observacao\": \"Teste de conflito\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/reservas",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"]
-            }
-          }
-        },
-        {
-          "name": "Criar reserva com professor inativo",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "pm.test('Retorna erro de professor inativo', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.mensagem).to.include('inativo');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"professorId\": 3, \"carrinhoId\": 1, \"dataUso\": \"2026-05-25\", \"horaInicio\": \"10:00\", \"horaFim\": \"12:00\", \"turma\": \"ADS 1C\", \"observacao\": \"Teste professor inativo\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/reservas",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"]
-            }
-          }
-        },
-        {
-          "name": "Criar reserva com carrinho inativo",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"professorId\": 1, \"carrinhoId\": 3, \"dataUso\": \"2026-05-25\", \"horaInicio\": \"10:00\", \"horaFim\": \"12:00\", \"turma\": \"ADS 1D\", \"observacao\": \"Teste carrinho inativo\"}"
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/reservas",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"]
-            }
-          }
-        },
-        {
-          "name": "Listar reservas",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:8080/api/reservas",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"]
-            }
-          }
-        },
-        {
-          "name": "Buscar reservas por data",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:8080/api/reservas?dataUso=2026-05-20",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"],
-              "query": [
-                {
-                  "key": "dataUso",
-                  "value": "2026-05-20"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Buscar reservas por professor",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:8080/api/reservas?professorId=1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"],
-              "query": [
-                {
-                  "key": "professorId",
-                  "value": "1"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Buscar reservas por carrinho",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:8080/api/reservas?carrinhoId=1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas"],
-              "query": [
-                {
-                  "key": "carrinhoId",
-                  "value": "1"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Cancelar reserva",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Reserva foi cancelada', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql('CANCELADA');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "url": {
-              "raw": "http://localhost:8080/api/reservas/1/cancelar",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas", "1", "cancelar"]
-            }
-          }
-        },
-        {
-          "name": "Finalizar reserva",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Reserva foi finalizada', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql('FINALIZADA');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "url": {
-              "raw": "http://localhost:8080/api/reservas/2/finalizar",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "reservas", "2", "finalizar"]
-            }
-          }
-        }
-      ]
-    }
-  ]
+    "info":  {
+                 "name":  "Carrinhos Notebooks API",
+                 "description":  "Collection de testes para API de reserva de carrinhos de notebooks",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+                 {
+                     "name":  "Sistema",
+                     "item":  [
+                                  {
+                                      "name":  "Resetar dados iniciais",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reset",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reset"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code e 200\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Dados foram restaurados\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.mensagem).to.include(\u0027restaurados\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Professores",
+                     "item":  [
+                                  {
+                                      "name":  "Criar professor vÃƒÂ¡lido",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 201\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(201);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Professor foi criado\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.nome).to.eql(\u0027Prof. Teste\u0027);",
+                                                                                    "    pm.expect(jsonData.ativo).to.eql(true);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"nome\": \"Prof. Teste\", \"email\": \"prof.teste@senai.br\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/professores",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "professores"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Criar professor invÃƒÂ¡lido (email duplicado)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 400\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Retorna mensagem de erro\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.mensagem).to.exist;",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"nome\": \"Prof. Repetido\", \"email\": \"joao.silva@senai.br\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/professores",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "professores"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Criar professor com email invÃƒÂ¡lido",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 400\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Retorna erro de validaÃƒÂ§ÃƒÂ£o\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.mensagem).to.include(\u0027email\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"nome\": \"Prof. Email InvÃƒÂ¡lido\", \"email\": \"emailinvalido\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/professores",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "professores"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Listar professores",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 200\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Retorna lista de professores\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData).to.be.an(\u0027array\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/professores",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "professores"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obter professor por ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/professores/1",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "professores",
+                                                                               "1"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Inativar professor",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/professores/3/inativar",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "professores",
+                                                                               "3",
+                                                                               "inativar"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Ativar professor",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/professores/3/ativar",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "professores",
+                                                                               "3",
+                                                                               "ativar"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Carrinhos",
+                     "item":  [
+                                  {
+                                      "name":  "Criar carrinho vÃƒÂ¡lido",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 201\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(201);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Carrinho foi criado\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.numero).to.eql(10);",
+                                                                                    "    pm.expect(jsonData.ativo).to.eql(true);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"numero\": 10, \"descricao\": \"Carrinho teste\", \"quantidadeNotebooks\": 20, \"localizacao\": \"Sala 105\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/carrinhos",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "carrinhos"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Criar carrinho com quantidade invÃƒÂ¡lida",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 400\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"numero\": 11, \"descricao\": \"Carrinho invÃƒÂ¡lido\", \"quantidadeNotebooks\": 0, \"localizacao\": \"Sala 105\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/carrinhos",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "carrinhos"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Listar carrinhos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/carrinhos",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "carrinhos"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Reservas",
+                     "item":  [
+                                  {
+                                      "name":  "Criar reserva vÃƒÂ¡lida",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 201\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(201);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Reserva foi criada com status AGENDADA\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.status).to.eql(\u0027AGENDADA\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"professorId\": 1, \"carrinhoId\": 1, \"dataUso\": \"2026-05-25\", \"horaInicio\": \"16:00\", \"horaFim\": \"18:00\", \"turma\": \"ADS 4A\", \"observacao\": \"Teste vÃƒÂ¡lido\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Criar reserva com conflito de horÃƒÂ¡rio",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 400\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Retorna erro de conflito\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.mensagem).to.include(\u0027conflito\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"professorId\": 1, \"carrinhoId\": 1, \"dataUso\": \"2026-05-20\", \"horaInicio\": \"09:00\", \"horaFim\": \"10:30\", \"turma\": \"ADS 2B\", \"observacao\": \"Teste de conflito\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Criar reserva com professor inativo",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 400\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Retorna erro de professor inativo\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.mensagem).to.include(\u0027inativo\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"professorId\": 3, \"carrinhoId\": 1, \"dataUso\": \"2026-05-25\", \"horaInicio\": \"10:00\", \"horaFim\": \"12:00\", \"turma\": \"ADS 1C\", \"observacao\": \"Teste professor inativo\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Criar reserva com carrinho inativo",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 400\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"professorId\": 1, \"carrinhoId\": 3, \"dataUso\": \"2026-05-25\", \"horaInicio\": \"10:00\", \"horaFim\": \"12:00\", \"turma\": \"ADS 1D\", \"observacao\": \"Teste carrinho inativo\"}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Listar reservas",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Buscar reservas por data",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas?dataUso=2026-05-20",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "dataUso",
+                                                                                    "value":  "2026-05-20"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Buscar reservas por professor",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas?professorId=1",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "professorId",
+                                                                                    "value":  "1"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Buscar reservas por carrinho",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas?carrinhoId=1",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "carrinhoId",
+                                                                                    "value":  "1"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Cancelar reserva",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 200\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Reserva foi cancelada\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.status).to.eql(\u0027CANCELADA\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas/1/cancelar",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas",
+                                                                               "1",
+                                                                               "cancelar"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Finalizar reserva",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status code ÃƒÂ© 200\u0027, function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "pm.test(\u0027Reserva foi finalizada\u0027, function () {",
+                                                                                    "    var jsonData = pm.response.json();",
+                                                                                    "    pm.expect(jsonData.status).to.eql(\u0027FINALIZADA\u0027);",
+                                                                                    "});"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/reservas/2/finalizar",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "reservas",
+                                                                               "2",
+                                                                               "finalizar"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 }
+             ],
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "https://senai-testes-sistema.onrender.com/api",
+                         "type":  "string"
+                     }
+                 ]
 }

@@ -25,29 +25,40 @@ const contentTypes = {
   '.webp': 'image/webp'
 }
 
-let professorId = 3
-let carrinhoId = 4
-let reservaId = 4
+let professorId
+let carrinhoId
+let reservaId
+let professores
+let carrinhos
+let reservas
 
-const professores = [
-  { id: 1, nome: 'Prof. Joao Silva', email: 'joao.silva@senai.br', ativo: true },
-  { id: 2, nome: 'Prof. Maria Santos', email: 'maria.santos@senai.br', ativo: true },
-  { id: 3, nome: 'Prof. Carlos Oliveira', email: 'carlos.oliveira@senai.br', ativo: false }
-]
+function resetData() {
+  professorId = 3
+  carrinhoId = 4
+  reservaId = 4
 
-const carrinhos = [
-  { id: 1, numero: 1, descricao: 'Carrinho com 20 notebooks Dell', quantidadeNotebooks: 20, localizacao: 'Sala 101', ativo: true },
-  { id: 2, numero: 2, descricao: 'Carrinho com 15 notebooks Lenovo', quantidadeNotebooks: 15, localizacao: 'Sala 102', ativo: true },
-  { id: 3, numero: 3, descricao: 'Carrinho com 25 notebooks HP', quantidadeNotebooks: 25, localizacao: 'Sala 103', ativo: false },
-  { id: 4, numero: 4, descricao: 'Carrinho com 18 notebooks Positivo', quantidadeNotebooks: 18, localizacao: 'Sala 104', ativo: true }
-]
+  professores = [
+    { id: 1, nome: 'Prof. Joao Silva', email: 'joao.silva@senai.br', ativo: true },
+    { id: 2, nome: 'Prof. Maria Santos', email: 'maria.santos@senai.br', ativo: true },
+    { id: 3, nome: 'Prof. Carlos Oliveira', email: 'carlos.oliveira@senai.br', ativo: false }
+  ]
 
-const reservas = [
-  { id: 1, professorId: 1, carrinhoId: 1, dataUso: '2026-05-20', horaInicio: '08:00', horaFim: '10:00', turma: 'ADS 1A', observacao: 'Aula de Teste de Software', status: 'AGENDADA' },
-  { id: 2, professorId: 1, carrinhoId: 1, dataUso: '2026-05-20', horaInicio: '14:00', horaFim: '16:00', turma: 'ADS 2A', observacao: 'Pratica de testes', status: 'AGENDADA' },
-  { id: 3, professorId: 2, carrinhoId: 2, dataUso: '2026-05-20', horaInicio: '09:00', horaFim: '11:00', turma: 'ADS 1B', observacao: 'Aula de API REST', status: 'AGENDADA' },
-  { id: 4, professorId: 2, carrinhoId: 2, dataUso: '2026-05-21', horaInicio: '10:00', horaFim: '12:00', turma: 'ADS 3A', observacao: 'Teste com Postman', status: 'AGENDADA' }
-]
+  carrinhos = [
+    { id: 1, numero: 1, descricao: 'Carrinho com 20 notebooks Dell', quantidadeNotebooks: 20, localizacao: 'Sala 101', ativo: true },
+    { id: 2, numero: 2, descricao: 'Carrinho com 15 notebooks Lenovo', quantidadeNotebooks: 15, localizacao: 'Sala 102', ativo: true },
+    { id: 3, numero: 3, descricao: 'Carrinho com 25 notebooks HP', quantidadeNotebooks: 25, localizacao: 'Sala 103', ativo: false },
+    { id: 4, numero: 4, descricao: 'Carrinho com 18 notebooks Positivo', quantidadeNotebooks: 18, localizacao: 'Sala 104', ativo: true }
+  ]
+
+  reservas = [
+    { id: 1, professorId: 1, carrinhoId: 1, dataUso: '2026-05-20', horaInicio: '08:00', horaFim: '10:00', turma: 'ADS 1A', observacao: 'Aula de Teste de Software', status: 'AGENDADA' },
+    { id: 2, professorId: 1, carrinhoId: 1, dataUso: '2026-05-20', horaInicio: '14:00', horaFim: '16:00', turma: 'ADS 2A', observacao: 'Pratica de testes', status: 'AGENDADA' },
+    { id: 3, professorId: 2, carrinhoId: 2, dataUso: '2026-05-20', horaInicio: '09:00', horaFim: '11:00', turma: 'ADS 1B', observacao: 'Aula de API REST', status: 'AGENDADA' },
+    { id: 4, professorId: 2, carrinhoId: 2, dataUso: '2026-05-21', horaInicio: '10:00', horaFim: '12:00', turma: 'ADS 3A', observacao: 'Teste com Postman', status: 'AGENDADA' }
+  ]
+}
+
+resetData()
 
 function matchesOrigin(pattern, origin) {
   if (pattern === origin) return true
@@ -417,6 +428,10 @@ const server = http.createServer(async (req, res) => {
     if (parts[0] === 'api' && parts[1] === 'professores') return await handleProfessores(req, res, parts, origin)
     if (parts[0] === 'api' && parts[1] === 'carrinhos') return await handleCarrinhos(req, res, parts, origin)
     if (parts[0] === 'api' && parts[1] === 'reservas') return await handleReservas(req, res, url, parts, origin)
+    if (parts[0] === 'api' && parts[1] === 'reset' && req.method === 'POST') {
+      resetData()
+      return sendJson(res, 200, { mensagem: 'Dados restaurados com sucesso' }, origin)
+    }
     if (serveStatic(req, res, url, origin)) return
 
     return sendJson(res, 404, { mensagem: 'Endpoint nao encontrado' }, origin)
