@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { reservaService } from '../services/api'
+import { reservaService, getApiErrorMessage } from '../services/api'
 import { Card } from '../components/Card'
 import './DetalhesReserva.css'
 
@@ -20,14 +20,14 @@ export function DetalhesReserva() {
       setReserva(res.data)
       setErro(null)
     } catch (err) {
-      setErro('Erro ao carregar reserva')
+      setErro(getApiErrorMessage(err, 'Erro ao carregar reserva'))
     } finally {
       setCarregando(false)
     }
   }
 
   if (carregando) return <div className="loading">Carregando...</div>
-  if (!reserva) return <div className="error">Reserva não encontrada</div>
+  if (!reserva) return <div className="error">{erro || 'Reserva nao encontrada'}</div>
 
   return (
     <div className="detalhes-reserva">

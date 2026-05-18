@@ -1,14 +1,33 @@
 import axios from 'axios'
 
-// Use VITE_API_URL se definido, senão use localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+const configuredApiUrl = import.meta.env.VITE_API_URL
+const isDev = import.meta.env.DEV
+
+const API_BASE_URL = configuredApiUrl || (isDev ? 'http://localhost:8080/api' : null)
 
 console.log('[API] Base URL:', API_BASE_URL)
 
+const apiNotConfiguredMessage = 'API nao configurada. Defina VITE_API_URL no Vercel com a URL publica do backend, por exemplo: https://seu-backend.onrender.com/api'
+
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 5000
+  timeout: 15000
 })
+
+api.interceptors.request.use((config) => {
+  if (!API_BASE_URL) {
+    return Promise.reject(new Error(apiNotConfiguredMessage))
+  }
+
+  return config
+})
+
+export function getApiErrorMessage(error, fallback = 'Erro ao comunicar com a API') {
+  if (error?.response?.data?.mensagem) return error.response.data.mensagem
+  if (error?.code === 'ECONNABORTED') return 'Tempo limite excedido ao conectar na API. Verifique se o backend esta online e se VITE_API_URL aponta para a URL correta.'
+  if (error?.message) return error.message
+  return fallback
+}
 
 // Professores
 export const professorService = {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { professorService } from '../services/api'
+import { professorService, getApiErrorMessage } from '../services/api'
 import { Modal } from '../components/Modal'
 import { Card } from '../components/Card'
 import './Professores.css'
@@ -22,7 +22,7 @@ export function Professores() {
       setProfessores(res.data)
       setErro(null)
     } catch (err) {
-      setErro('Erro ao carregar professores')
+      setErro(getApiErrorMessage(err, 'Erro ao carregar professores'))
       console.error(err)
     } finally {
       setCarregando(false)
@@ -56,7 +56,7 @@ export function Professores() {
       await carregarProfessores()
       fecharModal()
     } catch (err) {
-      setErro(err.response?.data?.mensagem || 'Erro ao salvar professor')
+      setErro(getApiErrorMessage(err, 'Erro ao salvar professor'))
     }
   }
 
@@ -65,7 +65,7 @@ export function Professores() {
       await professorService.inativar(id)
       await carregarProfessores()
     } catch (err) {
-      setErro('Erro ao inativar professor')
+      setErro(getApiErrorMessage(err, 'Erro ao inativar professor'))
     }
   }
 
@@ -74,7 +74,7 @@ export function Professores() {
       await professorService.ativar(id)
       await carregarProfessores()
     } catch (err) {
-      setErro('Erro ao ativar professor')
+      setErro(getApiErrorMessage(err, 'Erro ao ativar professor'))
     }
   }
 

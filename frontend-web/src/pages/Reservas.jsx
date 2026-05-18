@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { reservaService, professorService, carrinhoService } from '../services/api'
+import { reservaService, professorService, carrinhoService, getApiErrorMessage } from '../services/api'
 import { Modal } from '../components/Modal'
 import { Card } from '../components/Card'
 import './Reservas.css'
@@ -41,7 +41,7 @@ export function Reservas() {
       setCarrinhos(carrinhosRes.data)
       setErro(null)
     } catch (err) {
-      setErro('Erro ao carregar dados')
+      setErro(getApiErrorMessage(err, 'Erro ao carregar dados'))
     } finally {
       setCarregando(false)
     }
@@ -59,7 +59,7 @@ export function Reservas() {
       }
       setReservas(res.data)
     } catch (err) {
-      setErro('Erro ao filtrar reservas')
+      setErro(getApiErrorMessage(err, 'Erro ao filtrar reservas'))
     }
   }
 
@@ -92,7 +92,7 @@ export function Reservas() {
       await carregarDados()
       fecharModal()
     } catch (err) {
-      setErro(err.response?.data?.mensagem || 'Erro ao criar reserva')
+      setErro(getApiErrorMessage(err, 'Erro ao criar reserva'))
     }
   }
 
@@ -101,7 +101,7 @@ export function Reservas() {
       await reservaService.cancelar(id)
       await carregarDados()
     } catch (err) {
-      setErro(err.response?.data?.mensagem || 'Erro ao cancelar reserva')
+      setErro(getApiErrorMessage(err, 'Erro ao cancelar reserva'))
     }
   }
 
@@ -110,7 +110,7 @@ export function Reservas() {
       await reservaService.finalizar(id)
       await carregarDados()
     } catch (err) {
-      setErro(err.response?.data?.mensagem || 'Erro ao finalizar reserva')
+      setErro(getApiErrorMessage(err, 'Erro ao finalizar reserva'))
     }
   }
 

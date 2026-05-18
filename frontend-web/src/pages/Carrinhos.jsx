@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { carrinhoService } from '../services/api'
+import { carrinhoService, getApiErrorMessage } from '../services/api'
 import { Modal } from '../components/Modal'
 import { Card } from '../components/Card'
 import './Carrinhos.css'
@@ -27,7 +27,7 @@ export function Carrinhos() {
       setCarrinhos(res.data)
       setErro(null)
     } catch (err) {
-      setErro('Erro ao carregar carrinhos')
+      setErro(getApiErrorMessage(err, 'Erro ao carregar carrinhos'))
     } finally {
       setCarregando(false)
     }
@@ -70,7 +70,7 @@ export function Carrinhos() {
       await carregarCarrinhos()
       fecharModal()
     } catch (err) {
-      setErro(err.response?.data?.mensagem || 'Erro ao salvar carrinho')
+      setErro(getApiErrorMessage(err, 'Erro ao salvar carrinho'))
     }
   }
 
@@ -79,7 +79,7 @@ export function Carrinhos() {
       await carrinhoService.inativar(id)
       await carregarCarrinhos()
     } catch (err) {
-      setErro('Erro ao inativar carrinho')
+      setErro(getApiErrorMessage(err, 'Erro ao inativar carrinho'))
     }
   }
 
@@ -88,7 +88,7 @@ export function Carrinhos() {
       await carrinhoService.ativar(id)
       await carregarCarrinhos()
     } catch (err) {
-      setErro('Erro ao ativar carrinho')
+      setErro(getApiErrorMessage(err, 'Erro ao ativar carrinho'))
     }
   }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Card } from '../components/Card'
-import { reservaService, professorService, carrinhoService } from '../services/api'
+import { reservaService, carrinhoService, getApiErrorMessage } from '../services/api'
 import './Dashboard.css'
 
 export function Dashboard() {
@@ -36,7 +36,7 @@ export function Dashboard() {
         reservasHoje
       })
     } catch (err) {
-      setErro('Erro ao carregar dados')
+      setErro(getApiErrorMessage(err, 'Erro ao carregar dados'))
       console.error(err)
     } finally {
       setCarregando(false)
