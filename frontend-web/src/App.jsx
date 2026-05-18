@@ -6,6 +6,7 @@ import { Professores } from './pages/Professores'
 import { Carrinhos } from './pages/Carrinhos'
 import { Reservas } from './pages/Reservas'
 import { DetalhesReserva } from './pages/DetalhesReserva'
+import { ApiDocs } from './pages/ApiDocs'
 import './App.css'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/carrinhos" element={<Carrinhos />} />
           <Route path="/reservas" element={<Reservas />} />
           <Route path="/reservas/:id" element={<DetalhesReserva />} />
+          <Route path="/api-docs" element={<ApiDocs />} />
         </Routes>
       </main>
     </Router>

@@ -12,6 +12,7 @@ export function Header() {
           <li><Link to="/professores">Professores</Link></li>
           <li><Link to="/carrinhos">Carrinhos</Link></li>
           <li><Link to="/reservas">Reservas</Link></li>
+          <li><Link to="/api-docs">API</Link></li>
         </ul>
       </nav>
     </header>
