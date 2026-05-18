@@ -4,6 +4,7 @@ Sistema didatico para um curso de Testes de Software. O projeto tem:
 
 - Backend API REST em Node.js com dados em memoria.
 - Frontend web em React/Vite.
+- Um Dockerfile na raiz para publicar tudo junto no Render.
 - Deploy gratuito no Render via `render.yaml`.
 
 ## Projetos
@@ -64,19 +65,18 @@ No Render:
 
 1. Clique em New > Blueprint.
 2. Selecione este repositorio.
-3. Confirme os servicos.
+3. Confirme o servico.
 4. Clique em Apply.
 
-Servicos criados:
+Servico criado:
 
-- `senai-testes-api`: backend Node.js.
-- `senai-testes-web`: frontend React/Vite.
+- `senai-testes-sistema`: frontend React + backend Node.js.
 
 URLs esperadas:
 
-- Frontend: `https://senai-testes-web.onrender.com`
-- Backend: `https://senai-testes-api.onrender.com`
-- Health check: `https://senai-testes-api.onrender.com/actuator/health`
+- Sistema: `https://senai-testes-sistema.onrender.com`
+- API: `https://senai-testes-sistema.onrender.com/api/carrinhos`
+- Health check: `https://senai-testes-sistema.onrender.com/actuator/health`
 
 Guia completo: [DEPLOYMENT_RENDER.md](DEPLOYMENT_RENDER.md)
 

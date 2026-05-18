@@ -72,4 +72,4 @@ Passos:
 4. Confirme os servicos.
 5. Clique em Apply.
 
-O backend usa Docker. O frontend usa Static Site com `npm ci && npm run build`.
+No Render, o `Dockerfile` da raiz builda o frontend e sobe a API Node servindo tudo no mesmo dominio.

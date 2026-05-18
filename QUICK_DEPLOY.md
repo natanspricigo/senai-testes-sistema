@@ -1,6 +1,6 @@
 # Quick Deploy no Render
 
-Guia rapido para publicar o frontend e o backend no Render.
+Guia rapido para publicar o sistema no Render usando um unico Web Service Docker.
 
 ## Deploy com Blueprint
 
@@ -11,22 +11,20 @@ Guia rapido para publicar o frontend e o backend no Render.
 5. Confirme o arquivo `render.yaml`.
 6. Clique em Apply.
 
-O Render cria dois servicos:
+O Render cria um servico:
 
-- `senai-testes-api`: backend Node.js.
-- `senai-testes-web`: frontend React/Vite.
+- `senai-testes-sistema`: frontend React + backend Node.js no mesmo Docker.
 
 ## URLs
 
 Depois do deploy, use:
 
-- Frontend: `https://senai-testes-web.onrender.com`
-- Backend: `https://senai-testes-api.onrender.com`
-- Health check: `https://senai-testes-api.onrender.com/actuator/health`
-- Health check: `https://senai-testes-api.onrender.com/actuator/health`
+- Sistema: `https://senai-testes-sistema.onrender.com`
+- API: `https://senai-testes-sistema.onrender.com/api/carrinhos`
+- Health check: `https://senai-testes-sistema.onrender.com/actuator/health`
 
-O `VITE_API_URL` do frontend e preenchido automaticamente pelo `render.yaml`.
+O frontend chama a API por `/api`, no mesmo dominio.
 
 ## Observacao
 
-No plano gratuito, o backend pode dormir apos um periodo sem uso. A primeira chamada depois disso pode demorar alguns segundos.
+No plano gratuito, o servico pode dormir apos um periodo sem uso. A primeira chamada depois disso pode demorar alguns segundos.

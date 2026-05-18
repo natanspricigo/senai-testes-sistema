@@ -3,7 +3,7 @@
 Este projeto esta preparado para dois cenarios:
 
 - Docker local: sobe backend Node.js e frontend React com Nginx.
-- Render: publica o backend como Web Service Docker e o frontend como Static Site.
+- Render: publica frontend e backend juntos em um Web Service Docker.
 
 ## Rodar tudo com Docker
 
@@ -49,10 +49,9 @@ No Render:
 3. Confirme os servicos.
 4. Clique em Apply.
 
-Servicos criados:
+Servico criado:
 
-- `senai-testes-api`: backend Node.js usando `backend-api/Dockerfile`.
-- `senai-testes-web`: frontend React/Vite usando `frontend-web/dist`.
+- `senai-testes-sistema`: frontend React + backend Node.js usando o `Dockerfile` da raiz.
 
 O `VITE_API_URL` do frontend referencia automaticamente a URL publica do backend.
 
@@ -64,10 +63,4 @@ Backend:
 APP_CORS_ALLOWED_ORIGIN_PATTERNS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://*.onrender.com
 ```
 
-Frontend:
-
-```text
-VITE_API_URL=https://senai-testes-api.onrender.com/api
-```
-
-Quando usar o Blueprint, o Render configura essa variavel automaticamente.
+No Render, o frontend chama a API por `/api`, no mesmo dominio. Nao precisa configurar `VITE_API_URL`.

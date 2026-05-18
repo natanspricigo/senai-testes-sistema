@@ -1,27 +1,9 @@
 services:
   - type: web
-    name: senai-testes-api
+    name: senai-testes-sistema
     runtime: docker
     plan: free
-    rootDir: backend-api
     healthCheckPath: /actuator/health
     envVars:
       - key: APP_CORS_ALLOWED_ORIGIN_PATTERNS
         value: http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://*.onrender.com
-
-  - type: web
-    name: senai-testes-web
-    runtime: static
-    plan: free
-    buildCommand: cd frontend-web && npm ci && npm run build
-    staticPublishPath: frontend-web/dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: senai-testes-api
-          envVarKey: RENDER_EXTERNAL_URL

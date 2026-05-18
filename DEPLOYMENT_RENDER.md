@@ -1,11 +1,12 @@
 # Deploy no Render
 
-Este projeto usa um Blueprint do Render para publicar backend e frontend juntos.
+Este projeto usa um unico Web Service Docker no Render para publicar frontend e backend juntos.
 
 ## Estrutura publicada
 
-- Backend: `backend-api`, Node.js, Web Service Docker.
-- Frontend: `frontend-web`, React/Vite, Static Site.
+- Backend: `backend-api`, Node.js.
+- Frontend: `frontend-web`, React/Vite.
+- Deploy: `Dockerfile` da raiz, servindo frontend e API no mesmo dominio.
 
 ## Como publicar
 
@@ -16,26 +17,25 @@ Este projeto usa um Blueprint do Render para publicar backend e frontend juntos.
 5. Confirme o arquivo `render.yaml`.
 6. Aplique o Blueprint.
 
-## Servicos criados
+Tambem funciona criando manualmente um Web Service Docker apontando para a raiz do repositorio.
+
+## Servico criado
 
 ```text
-senai-testes-api
-senai-testes-web
+senai-testes-sistema
 ```
 
-URLs esperadas:
+URL esperada:
 
 ```text
-https://senai-testes-api.onrender.com
-https://senai-testes-web.onrender.com
+https://senai-testes-sistema.onrender.com
 ```
 
 Endpoints uteis:
 
 ```text
-https://senai-testes-api.onrender.com/api/carrinhos
-https://senai-testes-api.onrender.com/swagger-ui.html
-https://senai-testes-api.onrender.com/actuator/health
+https://senai-testes-sistema.onrender.com/api/carrinhos
+https://senai-testes-sistema.onrender.com/actuator/health
 ```
 
 ## Variaveis
@@ -44,16 +44,10 @@ O `render.yaml` configura:
 
 ```text
 APP_CORS_ALLOWED_ORIGIN_PATTERNS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://*.onrender.com
-VITE_API_URL=<URL publica do backend>
 ```
 
-O frontend normaliza `VITE_API_URL`, entao tanto estas duas formas funcionam:
-
-```text
-https://senai-testes-api.onrender.com
-https://senai-testes-api.onrender.com/api
-```
+No deploy Docker da raiz, o frontend chama a API por `/api`, no mesmo dominio. Nao precisa configurar `VITE_API_URL`.
 
 ## Plano gratuito
 
-No plano gratuito, o backend pode dormir quando fica sem trafego. A primeira chamada depois disso pode demorar um pouco, o que e normal para esse tipo de ambiente educacional.
+No plano gratuito, o servico pode dormir quando fica sem trafego. A primeira chamada depois disso pode demorar um pouco, o que e normal para esse tipo de ambiente educacional.
