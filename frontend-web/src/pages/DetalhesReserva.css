@@ -1,0 +1,102 @@
+.detalhes-reserva {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.detalhes-reserva h1 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.detalhes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.detalhes-grid h2 {
+  color: #2c3e50;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .label {
+  color: #7f8c8d;
+  font-weight: bold;
+  min-width: 100px;
+}
+
+.info-row span:last-child {
+  color: #333;
+  text-align: right;
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.status-agendada {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-cancelada {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-finalizada {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.badge.ativo {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge.inativo {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.observacao-card {
+  margin-top: 20px;
+}
+
+.observacao-card p {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
