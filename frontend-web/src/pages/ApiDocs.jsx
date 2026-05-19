@@ -1,6 +1,7 @@
 import React from 'react'
 import './ApiDocs.css'
 
+document.title = 'Documentação da API';
 const baseUrl = `${window.location.origin}/api`
 
 const sections = [

@@ -18,7 +18,8 @@ export function Carrinhos() {
   })
 
   useEffect(() => {
-    carregarCarrinhos()
+     document.title = 'Carrinhos';
+     carregarCarrinhos()
   }, [])
 
   const carregarCarrinhos = async () => {

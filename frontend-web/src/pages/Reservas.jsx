@@ -26,7 +26,8 @@ export function Reservas() {
   })
 
   useEffect(() => {
-    carregarDados()
+     document.title = 'Reservas';
+     carregarDados()
   }, [])
 
   const carregarDados = async () => {
