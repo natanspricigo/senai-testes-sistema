@@ -11,7 +11,8 @@ export function DetalhesReserva() {
   const [erro, setErro] = useState(null)
 
   useEffect(() => {
-    carregarReserva()
+     document.title = 'Detalhes da Reserva';
+     carregarReserva()
   }, [id])
 
   const carregarReserva = async () => {

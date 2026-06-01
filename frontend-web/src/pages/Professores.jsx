@@ -13,7 +13,8 @@ export function Professores() {
   const [formData, setFormData] = useState({ nome: '', email: '' })
 
   useEffect(() => {
-    carregarProfessores()
+     document.title = 'Professores';
+     carregarProfessores()
   }, [])
 
   const carregarProfessores = async () => {

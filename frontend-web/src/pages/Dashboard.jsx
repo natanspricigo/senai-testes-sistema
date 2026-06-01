@@ -14,6 +14,7 @@ export function Dashboard() {
   const [erro, setErro] = useState(null)
 
   useEffect(() => {
+    document.title = 'Dashboard';
     carregarDados()
   }, [])
 
