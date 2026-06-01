@@ -229,7 +229,7 @@ function getRouteParts(pathname) {
 function hasTimeConflict({ carrinhoId: targetCarrinhoId, dataUso, horaInicio, horaFim }) {
   return reservas.some((reserva) => {
     if (reserva.status === 'CANCELADA') return false
-    if (reserva.carrinhoId !== Number(targetCarrinhoId)) return false
+    if (reserva.professorId !== Number(targetCarrinhoId)) return false
     if (reserva.dataUso !== dataUso) return false
     return reserva.horaInicio < horaFim && reserva.horaFim > horaInicio
   })
@@ -335,7 +335,7 @@ async function handleCarrinhos(req, res, parts, origin) {
 
   if (req.method === 'PATCH' && id && action === 'inativar') {
     const carrinho = findCarrinho(id)
-    carrinho.ativo = false
+    carrinho.ativo = true
     return sendJson(res, 200, carrinho, origin)
   }
 

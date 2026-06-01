@@ -1,6 +1,28 @@
-# Bugs para os alunos encontrarem
+# Atividade - Encontrar e documentar bugs
 
-Base da API:
+## Contexto
+
+Voce recebeu um sistema simples de reserva de carrinhos de notebooks.
+
+O sistema possui:
+
+- Cadastro de professores.
+- Cadastro de carrinhos.
+- Cadastro e consulta de reservas.
+- Acoes para ativar/inativar professores e carrinhos.
+- Acoes para cancelar/finalizar reservas.
+
+Seu objetivo e testar o sistema, encontrar bugs e documentar os resultados.
+
+## Preparacao
+
+Base da API local:
+
+```text
+http://localhost:8080/api
+```
+
+Base da API publicada:
 
 ```text
 https://senai-testes-sistema.onrender.com/api
@@ -9,92 +31,142 @@ https://senai-testes-sistema.onrender.com/api
 Antes de cada rodada de testes, restaure os dados:
 
 ```text
-POST https://senai-testes-sistema.onrender.com/api/reset
+POST /api/reset
 ```
 
-## Lista de investigacao
+## Parte 1 - Plano de teste
 
-| # | Metodo | URL | Cenario para testar | Bug/comportamento suspeito |
+Crie um plano de teste contendo:
+
+| Campo | O que preencher |
+|---|---|
+| Objetivo | O que voce quer validar no sistema. |
+| Escopo | Quais telas, endpoints ou funcionalidades serao testados. |
+| Ambiente | Navegador, API local/publicada, Postman, sistema operacional etc. |
+| Criterio de aprovacao | Quando o teste deve ser considerado aprovado. |
+| Criterio de reprovacao | Quando o teste deve ser considerado reprovado. |
+
+Exemplo:
+
+| Campo | Exemplo |
+|---|---|
+| Objetivo | Validar se reservas respeitam disponibilidade de carrinho. |
+| Escopo | Tela Reservas e endpoint `POST /reservas`. |
+| Ambiente | Chrome, API local, Postman. |
+| Criterio de aprovacao | O sistema bloqueia reservas conflitantes. |
+| Criterio de reprovacao | O sistema permite duas reservas para o mesmo carrinho no mesmo horario. |
+
+## Parte 2 - Casos de teste
+
+Crie no minimo 8 casos de teste.
+
+Cada caso deve possuir:
+
+| Campo | O que preencher |
+|---|---|
+| ID | Codigo unico do caso, como CT01, CT02, CT03. |
+| Objetivo | O que esta sendo validado. |
+| Pre-condicao | Situacao necessaria antes de executar o teste. |
+| Dados de entrada | Dados digitados na tela ou enviados no corpo da requisicao. |
+| Procedimento | Passo a passo executado. |
+| Resultado esperado | Comportamento correto esperado do sistema. |
+
+Modelo:
+
+| ID | Objetivo | Pre-condicao | Dados de entrada | Procedimento | Resultado esperado |
+|---|---|---|---|---|---|
+| CT01 | Verificar conflito de reserva | Dados restaurados | Carrinho 1, data 2026-05-20, 09:00 as 10:30 | Criar uma nova reserva | Sistema deve bloquear a reserva por conflito de horario |
+
+## Parte 3 - Registro de execucao
+
+Depois de executar os casos de teste, registre o que realmente aconteceu.
+
+Cada execucao deve possuir:
+
+| Campo | O que preencher |
+|---|---|
+| Caso executado | ID do caso testado. |
+| Resultado esperado | Mesmo resultado esperado definido no caso de teste. |
+| Resultado obtido | O que o sistema realmente fez. |
+| Evidencia | Print, resposta da API, status HTTP ou descricao objetiva. |
+| Status | Aprovado ou Reprovado. |
+
+Modelo:
+
+| Caso | Resultado esperado | Resultado obtido | Evidencia | Status |
 |---|---|---|---|---|
-| 1 | POST | `/professores` | Criar professor com email em maiusculas: `JOAO.SILVA@senai.br` | A API pode aceitar email duplicado se mudar maiusculas/minusculas. |
-| 2 | POST | `/professores` | Criar professor com espacos no email: `" joao.silva@senai.br "` | A API nao normaliza espacos antes de comparar duplicidade. |
-| 3 | POST | `/professores` | Criar professor com nome muito curto: `"A"` | Nao ha validacao de tamanho minimo do nome. |
-| 4 | PUT | `/professores/999` | Atualizar professor inexistente | Deve retornar 404 com mensagem clara. Verificar se o erro ajuda o usuario. |
-| 5 | POST | `/carrinhos` | Criar carrinho com numero decimal: `1.5` | A API aceita numero decimal, mas carrinho deveria ser numero inteiro. |
-| 6 | POST | `/carrinhos` | Criar carrinho com descricao muito curta: `"x"` | Nao ha validacao de tamanho minimo da descricao. |
-| 7 | POST | `/carrinhos` | Criar carrinho com localizacao vazia ou so espacos | Deve bloquear. Verificar mensagem e status HTTP. |
-| 8 | POST | `/reservas` | Criar reserva com data invalida: `"dataUso": "abc"` | A API aceita qualquer texto como data. |
-| 9 | POST | `/reservas` | Criar reserva com hora invalida: `"horaInicio": "25:99"` | A API aceita horario fora do formato real. |
-| 10 | POST | `/reservas` | Criar reserva com hora sem zero: `"horaInicio": "9:00"` e `"horaFim": "10:00"` | Comparacao de horarios por texto pode gerar resultado incorreto. |
-| 11 | POST | `/reservas` | Criar reserva com `professorId` em texto: `"1"` | A API aceita string numerica. Decidir se isso deveria ser permitido. |
-| 12 | POST | `/reservas` | Criar reserva com carrinho inativo: `"carrinhoId": 3` | Deve retornar erro de regra de negocio. |
-| 13 | POST | `/reservas` | Criar reserva com professor inativo: `"professorId": 3` | Deve retornar erro de regra de negocio. |
-| 14 | POST | `/reservas` | Criar reserva conflitante no carrinho 1 em `2026-05-20`, das `09:00` as `10:30` | Deve detectar conflito com reserva existente. |
-| 15 | PATCH | `/reservas/1/cancelar` | Cancelar a mesma reserva duas vezes | Segunda tentativa deve retornar erro. |
-| 16 | PATCH | `/reservas/2/finalizar` | Finalizar a mesma reserva duas vezes | Segunda tentativa deve retornar erro. |
-| 17 | GET | `/reservas?dataUso=abc` | Buscar por data invalida | A API retorna lista vazia em vez de avisar formato invalido. |
-| 18 | GET | `/reservas?professorId=abc` | Buscar por professor invalido | A API retorna lista vazia em vez de avisar ID invalido. |
-| 19 | GET | `/qualquer-coisa` | Acessar endpoint inexistente | Deve retornar 404 com mensagem clara. |
-| 20 | POST | `/reset` | Resetar dados depois de criar/cancelar registros | Verificar se professores, carrinhos e reservas voltam ao estado inicial. |
+| CT01 | Bloquear reserva conflitante | Sistema criou a reserva | HTTP 201 com nova reserva | Reprovado |
 
-## Payloads uteis
+## Parte 4 - Relatorio de bug
 
-### Professor com email duplicado em maiusculas
+Para cada caso reprovado, crie um relatorio de bug.
 
-```json
-{
-  "nome": "Prof. Duplicado",
-  "email": "JOAO.SILVA@senai.br"
-}
-```
+Cada bug deve possuir:
 
-### Carrinho com numero decimal
+| Campo | O que preencher |
+|---|---|
+| ID do bug | Codigo como BUG01, BUG02, BUG03. |
+| Titulo | Resumo curto do problema. |
+| Funcionalidade | Tela ou endpoint onde ocorreu. |
+| Passos para reproduzir | Passo a passo para encontrar o problema novamente. |
+| Resultado esperado | Comportamento correto. |
+| Resultado obtido | Comportamento incorreto observado. |
+| Evidencia | Print, payload, resposta da API ou status HTTP. |
+| Severidade | Baixa, media ou alta. |
+| Prioridade | Baixa, media ou alta. |
 
-```json
-{
-  "numero": 1.5,
-  "descricao": "Carrinho decimal",
-  "quantidadeNotebooks": 10,
-  "localizacao": "Sala 999"
-}
-```
+Modelo:
 
-### Reserva com data e horario invalidos
+| Campo | Exemplo |
+|---|---|
+| ID do bug | BUG01 |
+| Titulo | Sistema permite reserva conflitante |
+| Funcionalidade | Reservas |
+| Passos para reproduzir | Resetar dados; criar reserva para carrinho 1 em 2026-05-20 das 09:00 as 10:30 |
+| Resultado esperado | API deve retornar erro informando conflito de horario |
+| Resultado obtido | API retorna 201 e cria a reserva |
+| Evidencia | Payload enviado e resposta da API |
+| Severidade | Alta |
+| Prioridade | Alta |
 
-```json
-{
-  "professorId": 1,
-  "carrinhoId": 1,
-  "dataUso": "abc",
-  "horaInicio": "25:99",
-  "horaFim": "26:99",
-  "turma": "ADS BUG",
-  "observacao": "Teste de formato invalido"
-}
-```
+## Cenarios sugeridos para investigacao
 
-### Reserva com conflito de horario
+Use estes cenarios como ponto de partida. Alguns podem passar e outros podem revelar bugs.
 
-```json
-{
-  "professorId": 1,
-  "carrinhoId": 1,
-  "dataUso": "2026-05-20",
-  "horaInicio": "09:00",
-  "horaFim": "10:30",
-  "turma": "ADS CONFLITO",
-  "observacao": "Deve conflitar com reserva existente"
-}
-```
+| # | Area | Cenario para testar |
+|---|---|---|
+| 1 | Professores | Inativar um professor ativo pela tela. |
+| 2 | Professores | Tentar criar professor com email ja cadastrado. |
+| 3 | Professores | Criar professor com email em maiusculas parecido com um ja existente. |
+| 4 | Carrinhos | Inativar um carrinho ativo pela tela ou pela API. |
+| 5 | Carrinhos | Criar carrinho com quantidade de notebooks igual a zero. |
+| 6 | Carrinhos | Criar carrinho com numero repetido. |
+| 7 | Reservas | Criar reserva com professor inativo. |
+| 8 | Reservas | Criar reserva com carrinho inativo. |
+| 9 | Reservas | Criar reserva em horario conflitante para o mesmo carrinho. |
+| 10 | Reservas | Filtrar reservas por professor. |
+| 11 | Reservas | Filtrar reservas por carrinho. |
+| 12 | Reservas | Criar reserva com hora final menor que hora inicial. |
+| 13 | Reservas | Cancelar a mesma reserva duas vezes. |
+| 14 | Reservas | Finalizar a mesma reserva duas vezes. |
 
-## Dica para a aula
+## Entrega esperada
 
-Peca para os alunos registrarem para cada bug:
+O aluno deve entregar:
 
-- URL testada.
-- Metodo HTTP.
-- Body enviado.
-- Status retornado.
-- Resposta da API.
-- Resultado esperado.
-- Severidade: baixa, media ou alta.
+- Plano de teste.
+- No minimo 8 casos de teste.
+- Registro de execucao preenchido.
+- No minimo 4 bugs documentados.
+- Evidencias dos bugs encontrados.
+
+## Criterios de avaliacao
+
+| Criterio | O que sera avaliado |
+|---|---|
+| Organizacao | Documentacao clara e facil de ler. |
+| Qualidade dos casos | Casos com objetivo, entrada, procedimento e resultado esperado. |
+| Execucao | Registro fiel do que aconteceu no sistema. |
+| Analise | Diferenca clara entre resultado esperado e resultado obtido. |
+| Evidencias | Prints, payloads ou respostas suficientes para reproduzir o bug. |
+| Severidade | Classificacao coerente com o impacto do problema. |

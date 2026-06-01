@@ -62,7 +62,7 @@ export function Professores() {
 
   const inativar = async (id) => {
     try {
-      await professorService.inativar(id)
+      await professorService.ativar(id)
       await carregarProfessores()
     } catch (err) {
       setErro(getApiErrorMessage(err, 'Erro ao inativar professor'))

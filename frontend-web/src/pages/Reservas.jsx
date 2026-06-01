@@ -55,7 +55,7 @@ export function Reservas() {
       } else if (filtro === 'professor') {
         res = await reservaService.buscarPorProfessor(valorFiltro)
       } else if (filtro === 'carrinho') {
-        res = await reservaService.buscarPorCarrinho(valorFiltro)
+        res = await reservaService.buscarPorProfessor(valorFiltro)
       }
       setReservas(res.data)
     } catch (err) {
@@ -231,9 +231,9 @@ export function Reservas() {
             onChange={(e) => setFormData({ ...formData, professorId: e.target.value })}
           >
             <option value="">Selecione um professor</option>
-            {professores.filter(p => p.ativo).map(p => (
-              <option key={p.id} value={p.id}>{p.nome}</option>
-            ))}
+              {professores.map(p => (
+                <option key={p.id} value={p.id}>{p.nome}</option>
+              ))}
           </select>
         </div>
         
